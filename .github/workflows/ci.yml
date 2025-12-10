@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -23,11 +24,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Checkstyle
-        run: mvn checkstyle:check
+      # 1) CHECKSTYLE (validate фаз дээр жолоодог тул ok)
+      - name: Run Checkstyle
+        run: mvn -B checkstyle:check
 
-      - name: Run Tests + JaCoCo
-        run: mvn test jacoco:check
-
-      - name: JaCoCo Report
-        run: mvn jacoco:report
+      # 2) RUN ALL TESTS + JACOCO COVERAGE + COVERAGE CHECK
+      # mvn verify → test + jacoco prepare-agent + report + check (rules) бүгдийг ажиллуулдаг
+      - name: Run Tests + Coverage Verification
+        run: mvn -B verify
